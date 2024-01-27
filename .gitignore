@@ -176,3 +176,4 @@ dist*
 !.env.copy
 hosts.txt
 *.pem
+.wakatime-project

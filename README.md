@@ -1,24 +1,22 @@
-# node-mitm-proxy-chain 
+### Base
 
-## Table of Contents
+Create .env
 
-- [About](#about)
-- [Getting Started](#getting_started)
-- [Usage](#usage)
+Fill custom values
+```sh
+HOST=127.0.0.1
+PORT=8000
+API_HOST=127.0.0.1
+API_PORT=6666
+# Internal usage
+HTTPS_ONLY=false
+DISABLE_LOGGING=false
+API_PATH=./src/forward/api/
+```
 
-## About <a name = "about"></a>
+### Api for dynamic remote proxy changing
 
-Simple forward proxy for http/s, with a feature of **chaining** such proxies.
-Better version of [node-mitm-proxy](https://github.com/SanariSan/node-mitm-proxy)
-
-## Getting Started <a name = "getting_started"></a>
-
-- Change host/port in dotenv file.
-- If planning on chaining fill in proxy host/port.
-- Otherwise, if not planning on chaining or this is the last proxy node in chain, just remove both params entirely
-
-## Usage <a name = "usage"></a>
-
-`yarn mon`
-
-`yarn start`
+```sh
+curl 127.0.0.1:6666/api/get-remote-proxy
+curl -X POST 127.0.0.1:6666/api/set-remote-proxy -d '127.0.0.1:1337'
+```

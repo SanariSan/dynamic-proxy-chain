@@ -14,17 +14,17 @@ async function index() {
   const httpsOnly = process.env.HTTPS_ONLY === 'true';
   const host = process.env.HOST;
   const port = Number(process.env.PORT) || process.env.PORT;
-  const remoteProxyHost = process.env.REMOTE_PROXY_HOST;
-  const remoteProxyPort = Number(process.env.REMOTE_PROXY_PORT) || process.env.REMOTE_PROXY_PORT;
+  const apiHost = process.env.API_HOST;
+  const apiPort = Number(process.env.API_PORT) || process.env.API_PORT;
 
-  console.dir({ httpsOnly, host, port, remoteProxyHost, remoteProxyPort });
+  console.dir({ httpsOnly, host, port, apiHost, apiPort });
 
   setupServer({
     httpsOnly,
     host,
     port,
-    remoteProxyHost,
-    remoteProxyPort,
+    apiHost,
+    apiPort,
   });
 }
 

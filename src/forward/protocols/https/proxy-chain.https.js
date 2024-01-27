@@ -1,10 +1,12 @@
 const http = require('http');
+const { getCurrentRemoteProxy } = require('../../shared');
 
 // credits to https://gist.github.com/regevbr/de3f5e0475aedd9081608663241bee10
-function proxyChain(request, clientSocket, remoteProxySettings) {
+function proxyChain(request, clientSocket) {
+  const [remoteProxyHost, remoteProxyPort] = getCurrentRemoteProxy().split(':');
   const connectOptions = {
-    host: remoteProxySettings.target.host,
-    port: remoteProxySettings.target.port,
+    host: remoteProxyHost,
+    port: remoteProxyPort,
     headers: request.headers,
     method: 'CONNECT',
     path: request.url,

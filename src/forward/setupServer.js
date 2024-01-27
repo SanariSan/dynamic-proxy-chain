@@ -1,33 +1,19 @@
 const http = require('http');
-const httpProxy = require('http-proxy');
-const { setupHttp, setupHttps } = require('./protocols/index.js');
+const { setupHttp, setupHttps, setupApiHttp } = require('./protocols/index.js');
+const { getCurrentRemoteProxy } = require('./shared.js');
+const { setupRemoteProxyClient } = require('./remote-proxy-client.js');
+const eventEmitter = require('./events.js');
 
 function setupServer({
   httpsOnly,
   host = '127.0.0.1',
   port = 3000,
-  remoteProxyHost,
-  remoteProxyPort,
+  apiHost = '127.0.0.1',
+  apiPort = 3001,
 }) {
-  let remoteProxy;
-  let remoteProxySettings;
-
-  if (remoteProxyHost !== undefined && remoteProxyPort !== undefined) {
-    remoteProxySettings = {
-      target: {
-        host: remoteProxyHost,
-        port: remoteProxyPort,
-      },
-      toProxy: true,
-      prependPath: false,
-    };
-    remoteProxy = new httpProxy.createProxyServer(remoteProxySettings);
-    remoteProxy.on('error', function (err) {
-      console.log('ERR:', err);
-    });
-  }
-
   const server = http.createServer();
+  const apiServer = http.createServer();
+
   server.on('error', (e) => {
     if (e.code === 'EADDRINUSE' || e.code === 'EADDRNOTAVAIL') {
       console.log('Address in use or not available, retrying...');
@@ -38,11 +24,34 @@ function setupServer({
     }
   });
 
-  setupHttp({ server, remoteProxy, remoteProxySettings, httpsOnly });
-  setupHttps({ server, remoteProxySettings });
+  apiServer.on('error', (e) => {
+    if (e.code === 'EADDRINUSE' || e.code === 'EADDRNOTAVAIL') {
+      console.log('Address in use or not available, retrying...');
+      setTimeout(() => {
+        apiServer.close();
+        apiServer.listen(apiPort, apiHost);
+      }, 5000);
+    }
+  });
+
+  setupHttp({ server, httpsOnly });
+  setupHttps({ server });
+  setupApiHttp({ apiServer });
+
+  const [remoteProxyHost, remoteProxyPort] = getCurrentRemoteProxy().split(':');
+  setupRemoteProxyClient(remoteProxyHost, remoteProxyPort);
+
+  eventEmitter.on('set-remote-proxy', (proxy) => {
+    const [remoteProxyHost, remoteProxyPort] = proxy.split(':');
+    setupRemoteProxyClient(remoteProxyHost, remoteProxyPort);
+  });
 
   server.listen(port, host, () => {
-    console.log(`Listening: ${host}:${port}`);
+    console.log(`Proxy Listening: ${host}:${port}`);
+  });
+
+  apiServer.listen(apiPort, apiHost, () => {
+    console.log(`Api Listening: ${apiHost}:${apiPort}`);
   });
 }
 

@@ -1,10 +1,9 @@
-const { noProxyChain, proxyChain } = require('./https/index.js');
+const { proxyChain } = require('./https/index.js');
 
 // PROXY HTTPS
-function setupHttps({ server, remoteProxySettings }) {
+function setupHttps({ server }) {
   server.on('connect', (request, clientSocket, head) => {
-    if (remoteProxySettings !== undefined) proxyChain(request, clientSocket, remoteProxySettings);
-    else noProxyChain(request, clientSocket, head);
+    proxyChain(request, clientSocket);
   });
 }
 

@@ -1,7 +1,7 @@
-const httpProxy = require('http-proxy');
+const { proxyRequest } = require('../remote-proxy-client');
 
 // PROXY HTTP
-function setupHttp({ server, remoteProxy, remoteProxySettings, httpsOnly }) {
+function setupHttp({ server, httpsOnly }) {
   server.on(
     'request',
     httpsOnly
@@ -14,15 +14,8 @@ function setupHttp({ server, remoteProxy, remoteProxySettings, httpsOnly }) {
 
           console.log(`[+] HTTP: ${hostname}:${port || '80'}${pathname || ''}`);
 
-          if (remoteProxy !== undefined && remoteProxySettings !== undefined) {
-            remoteProxy.web(request, response, remoteProxySettings);
-            return;
-          }
-
-          const proxy = httpProxy.createProxyServer({});
-          proxy.web(request, response, {
-            target: `${protocol}//${hostname}:${port || '80'}`,
-          });
+          proxyRequest(request, response);
+          return;
         },
   );
 }
