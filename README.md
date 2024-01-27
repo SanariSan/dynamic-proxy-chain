@@ -17,9 +17,12 @@ API_PATH=./src/forward/api/
 ### Api for dynamic remote proxy changing
 
 ```sh
-curl 127.0.0.1:6666/api/get-remote-proxy
-curl -X POST 127.0.0.1:6666/api/set-remote-proxy -d '127.0.0.1:1337'
-curl -X POST 127.0.0.1:6666/api/set-remote-proxy -d 'log:pass@127.0.0.1:1337'
+curl -X POST 127.0.0.1:6666/api/set-remote-proxy -d '127.0.0.1:1337' # {"data":"OK"}
+curl -X POST 127.0.0.1:6666/api/set-remote-proxy -d 'log:pass@127.0.0.1:1337' # {"data":"OK"}
+curl 127.0.0.1:6666/api/get-remote-proxy # {"data":"log:pass@127.0.0.1:1337"}
+
+# to reset proxy
+curl -X POST 127.0.0.1:6666/api/set-remote-proxy -d ''
 ```
 
 ### Usage
