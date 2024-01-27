@@ -1,11 +1,13 @@
 const eventEmitter = require('./events');
 
-let currentRemoteProxy = {
+const CURRENT_REMOTE_PROXY_DEFAULT = {
   remoteProxyUsername: undefined,
   remoteProxyPassword: undefined,
   remoteProxyHost: undefined,
   remoteProxyPort: undefined,
 };
+
+let currentRemoteProxy = CURRENT_REMOTE_PROXY_DEFAULT;
 
 /**
  * Function that takes a proxy string.
@@ -13,8 +15,11 @@ let currentRemoteProxy = {
  * @param string proxy
  */
 const parseProxyString = (proxy) => {
-  const splitted = proxy.split('@');
+  if (proxy === '') {
+    return CURRENT_REMOTE_PROXY_DEFAULT;
+  }
 
+  const splitted = proxy.split('@');
   let parsed;
 
   if (splitted.length === 1) {
