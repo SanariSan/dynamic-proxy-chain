@@ -1,17 +1,32 @@
 const http = require('http');
 const { getCurrentRemoteProxy } = require('../../shared');
 
-// credits to https://gist.github.com/regevbr/de3f5e0475aedd9081608663241bee10
+// partial credits to https://gist.github.com/regevbr/de3f5e0475aedd9081608663241bee10
 function proxyChain(request, clientSocket) {
-  const [remoteProxyHost, remoteProxyPort] = getCurrentRemoteProxy().split(':');
+  const { remoteProxyUsername, remoteProxyPassword, remoteProxyHost, remoteProxyPort } =
+    getCurrentRemoteProxy();
+
+  const proxyAuth =
+    remoteProxyUsername && remoteProxyPassword
+      ? {
+          'Proxy-Authorization':
+            'Basic ' +
+            Buffer.from(remoteProxyUsername + ':' + remoteProxyPassword).toString('base64'),
+        }
+      : {};
+
   const connectOptions = {
     host: remoteProxyHost,
     port: remoteProxyPort,
-    headers: request.headers,
+    headers: {
+      ...request.headers,
+      ...proxyAuth,
+    },
     method: 'CONNECT',
     path: request.url,
     agent: false,
   };
+
   // from TunnelingAgent.prototype.createSocket
   const connectReq = http.request(connectOptions);
   connectReq.useChunkedEncodingByDefault = false;

@@ -12,15 +12,11 @@ const receiveBody = async (req) => {
   for await (const chunk of req) buffers.push(chunk);
   const data = Buffer.concat(buffers).toString();
 
-  console.dir(`X:${data}:X`);
-
   let result = '';
   try {
     result = JSON.parse(data);
   } catch (e) {
-    console.dir(`X:${data}:X`);
     result = data;
-    console.dir(`X:${result}:X`);
   }
 
   return result;

@@ -1,10 +1,11 @@
-const { getCurrentRemoteProxy } = require('../shared');
+const { getCurrentRemoteProxy, constructProxyString } = require('../shared');
 
 module.exports = () => {
   const proxy = getCurrentRemoteProxy();
+  const proxyString = constructProxyString(proxy);
 
-  const message = 'Current remote proxy is ' + proxy;
+  const message = 'Current remote proxy is ' + proxyString;
   console.log(message);
 
-  return { data: proxy };
+  return { data: proxyString };
 };

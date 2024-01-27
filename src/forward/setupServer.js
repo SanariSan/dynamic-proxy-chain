@@ -38,12 +38,11 @@ function setupServer({
   setupHttps({ server });
   setupApiHttp({ apiServer });
 
-  const [remoteProxyHost, remoteProxyPort] = getCurrentRemoteProxy().split(':');
-  setupRemoteProxyClient(remoteProxyHost, remoteProxyPort);
+  const proxyObj = getCurrentRemoteProxy();
+  setupRemoteProxyClient(proxyObj);
 
-  eventEmitter.on('set-remote-proxy', (proxy) => {
-    const [remoteProxyHost, remoteProxyPort] = proxy.split(':');
-    setupRemoteProxyClient(remoteProxyHost, remoteProxyPort);
+  eventEmitter.on('set-remote-proxy', (proxyObj) => {
+    setupRemoteProxyClient(proxyObj);
   });
 
   server.listen(port, host, () => {
