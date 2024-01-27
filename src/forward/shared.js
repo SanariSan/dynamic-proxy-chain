@@ -3,8 +3,8 @@ const eventEmitter = require('./events');
 let currentRemoteProxy = {
   remoteProxyUsername: undefined,
   remoteProxyPassword: undefined,
-  remoteProxyHost: '127.0.0.1',
-  remoteProxyPort: '1337',
+  remoteProxyHost: undefined,
+  remoteProxyPort: undefined,
 };
 
 /**
@@ -77,7 +77,7 @@ const getCurrentRemoteProxy = () => currentRemoteProxy;
  */
 const setCurrentRemoteProxy = (proxyObj) => {
   currentRemoteProxy = proxyObj;
-  eventEmitter.emit('set-remote-proxy', proxyObj);
+  eventEmitter.emit('setup-remote-proxy');
 };
 
 module.exports = {

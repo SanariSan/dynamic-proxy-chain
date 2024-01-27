@@ -39,10 +39,12 @@ function setupServer({
   setupApiHttp({ apiServer });
 
   const proxyObj = getCurrentRemoteProxy();
-  setupRemoteProxyClient(proxyObj);
+  if (proxyObj.remoteProxyHost && proxyObj.remoteProxyPort) {
+    setupRemoteProxyClient();
+  }
 
-  eventEmitter.on('set-remote-proxy', (proxyObj) => {
-    setupRemoteProxyClient(proxyObj);
+  eventEmitter.on('setup-remote-proxy', () => {
+    setupRemoteProxyClient();
   });
 
   server.listen(port, host, () => {

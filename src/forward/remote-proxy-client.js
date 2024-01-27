@@ -4,8 +4,23 @@ const { getCurrentRemoteProxy } = require('./shared');
 let remoteProxyClient;
 let remoteProxySettings;
 
-function setupRemoteProxyClient({ remoteProxyHost, remoteProxyPort }) {
+function setupRemoteProxyClient() {
   if (remoteProxyClient) remoteProxyClient.removeAllListeners();
+
+  remoteProxyClient = new httpProxy.createProxyServer({});
+  remoteProxyClient.on('error', function (err) {
+    console.log('ERR:', err);
+  });
+}
+
+const proxyRequest = (request, response) => {
+  const { remoteProxyUsername, remoteProxyPassword, remoteProxyHost, remoteProxyPort } =
+    getCurrentRemoteProxy();
+
+  if (remoteProxyUsername && remoteProxyPassword) {
+    request.headers['Proxy-Authorization'] =
+      'Basic ' + Buffer.from(`${remoteProxyUsername}:${remoteProxyPassword}`).toString('base64');
+  }
 
   remoteProxySettings = {
     target: {
@@ -15,18 +30,6 @@ function setupRemoteProxyClient({ remoteProxyHost, remoteProxyPort }) {
     toProxy: true,
     prependPath: false,
   };
-  remoteProxyClient = new httpProxy.createProxyServer(remoteProxySettings);
-  remoteProxyClient.on('error', function (err) {
-    console.log('ERR:', err);
-  });
-}
-
-const proxyRequest = (request, response) => {
-  const { remoteProxyUsername, remoteProxyPassword } = getCurrentRemoteProxy();
-  if (remoteProxyUsername && remoteProxyPassword) {
-    request.headers['Proxy-Authorization'] =
-      'Basic ' + Buffer.from(`${remoteProxyUsername}:${remoteProxyPassword}`).toString('base64');
-  }
 
   remoteProxyClient.web(request, response, remoteProxySettings);
 };

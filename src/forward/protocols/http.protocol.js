@@ -1,6 +1,10 @@
+const httpProxy = require('http-proxy');
 const { proxyRequest } = require('../remote-proxy-client');
+const { getCurrentRemoteProxy } = require('../shared');
 
 // PROXY HTTP
+
+const forwardProxy = httpProxy.createProxyServer({});
 function setupHttp({ server, httpsOnly }) {
   server.on(
     'request',
@@ -14,8 +18,15 @@ function setupHttp({ server, httpsOnly }) {
 
           console.log(`[+] HTTP: ${hostname}:${port || '80'}${pathname || ''}`);
 
-          proxyRequest(request, response);
-          return;
+          const proxyObj = getCurrentRemoteProxy();
+          if (proxyObj.remoteProxyHost && proxyObj.remoteProxyPort) {
+            proxyRequest(request, response);
+            return;
+          }
+
+          forwardProxy.web(request, response, {
+            target: `${protocol}//${hostname}:${port || '80'}`,
+          });
         },
   );
 }
