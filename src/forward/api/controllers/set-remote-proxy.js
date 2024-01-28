@@ -1,9 +1,9 @@
-const { setCurrentRemoteProxy, parseProxyString } = require('../shared');
+const { RemoteProxy } = require('../../proxy');
 
 // log:pass@host:port OR host:port
 module.exports = (proxy) => {
-  const parsed = parseProxyString(proxy);
-  setCurrentRemoteProxy(parsed);
+  const parsed = RemoteProxy.parseProxyString(proxy);
+  RemoteProxy.init().currentRemoteProxy = parsed;
 
   const message = 'Updated remote proxy to ' + proxy;
   console.log(message);

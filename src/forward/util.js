@@ -7,16 +7,14 @@ const monkeyPatchConsole = ({ disableLogging }) => {
       return;
     }
     const msNow = now();
-    const date = new Date(msNow);
+    const date = new Date(msNow).toISOString().replace(/T/g, ' ').replace(/Z/g, '');
 
     if (err !== undefined) {
       log(err);
       return;
     }
 
-    log(
-      `[${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds()}]#[${msNow}] # ${text}`,
-    );
+    log(`[${date}]#[${msNow}] # ${text}`);
   };
 };
 

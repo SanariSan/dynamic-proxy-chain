@@ -1,11 +1,4 @@
-const { cacheFolder, watch, apiRoutes } = require('../cacher');
-
-cacheFolder();
-watch();
-
-setTimeout(() => {
-  console.dir({ apiRoutes });
-}, 1000);
+const { cacheApiFolder, watchApiFolder, apiRoutes } = require('./cacher.api');
 
 const receiveBody = async (req) => {
   const buffers = [];
@@ -28,6 +21,11 @@ const httpError = (res, status, message) => {
 };
 
 function setupApiHttp({ apiServer }) {
+  process.nextTick(() => {
+    cacheApiFolder();
+    watchApiFolder();
+  });
+
   apiServer.on('request', async (req, res) => {
     const url = req.url === '/' ? '/index.html' : req.url;
     const [section, destination] = url.substring(1).split('/');
@@ -59,4 +57,4 @@ function setupApiHttp({ apiServer }) {
   });
 }
 
-module.exports = setupApiHttp;
+module.exports = { setupApiHttp };
