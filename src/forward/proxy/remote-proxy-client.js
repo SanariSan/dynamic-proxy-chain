@@ -1,10 +1,12 @@
 const httpProxy = require('http-proxy');
 
+const nullifyIfFalsy = (value) => (value ? value : undefined);
+
 CURRENT_REMOTE_PROXY_DEFAULT = {
-  remoteProxyUsername: undefined,
-  remoteProxyPassword: undefined,
-  remoteProxyHost: undefined,
-  remoteProxyPort: undefined,
+  remoteProxyUsername: nullifyIfFalsy(process.env.INITIAL_REMOTE_PROXY_USERNAME),
+  remoteProxyPassword: nullifyIfFalsy(process.env.INITIAL_REMOTE_PROXY_PASSWORD),
+  remoteProxyHost: nullifyIfFalsy(process.env.INITIAL_REMOTE_PROXY_HOST),
+  remoteProxyPort: nullifyIfFalsy(process.env.INITIAL_REMOTE_PROXY_PORT),
 };
 
 class RemoteProxy {

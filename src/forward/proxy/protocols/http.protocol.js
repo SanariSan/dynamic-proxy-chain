@@ -3,10 +3,10 @@ const { RemoteProxy } = require('../remote-proxy-client');
 
 // PROXY HTTP
 const forwardProxy = httpProxy.createProxyServer({});
-function setupHttp({ server, httpsOnly }) {
+function setupHttp({ server, proxyHttpsOnly }) {
   server.on(
     'request',
-    httpsOnly
+    proxyHttpsOnly
       ? (req, res) => {
           res.writeHead(200, { 'Content-Type': 'text/plain' });
           res.end('No http allowed');

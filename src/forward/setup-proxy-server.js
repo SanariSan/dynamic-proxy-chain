@@ -1,7 +1,7 @@
 const http = require('http');
 const { setupHttp, setupHttps } = require('./proxy');
 
-function setupProxyServer({ host = '127.0.0.1', port = 3000, httpsOnly }) {
+function setupProxyServer({ host = '127.0.0.1', port = 3000, proxyHttpsOnly }) {
   const server = http.createServer();
 
   server.on('error', (e) => {
@@ -14,7 +14,7 @@ function setupProxyServer({ host = '127.0.0.1', port = 3000, httpsOnly }) {
     }
   });
 
-  setupHttp({ server, httpsOnly });
+  setupHttp({ server, proxyHttpsOnly });
   setupHttps({ server });
 
   server.listen(port, host, () => {
