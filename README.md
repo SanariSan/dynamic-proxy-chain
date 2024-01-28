@@ -1,4 +1,15 @@
-### Base
+## Usecases
+
+- You just want to spin up a simple proxy on your vps to change ip or test something.
+- For some reason you want to create a chain of proxies.
+- You've purchased several proxies from a store and wish to access them all using a single URL. Setting up a custom DNS might be too complicated or inconvenient for your setup. This repository enables the underlying remote proxy to be configured externally to your main application by making API requests here to set or rotate your addresses.
+- Idk suggest :)
+
+**This repo is more of a POC than prod-ready solution. If, by any chance, you inspect the codebase and have expertise on the topic, I'd be grateful to receive any advice!**
+
+__Plain js just because, no reason, I like ts more__ 
+
+## Setup
 
 Create .env
 
@@ -27,7 +38,18 @@ PROXY_HTTPS_ONLY=false
 DISABLE_LOGGING=false
 ```
 
-### Api for dynamic remote proxy changing
+## Usage
+
+At this point you have a local proxy address and api address to control chaining.
+
+### Proxy usage
+
+Put your `API_HOST:API_PORT` as proxy param to request
+```sh
+curl -x http://127.0.0.1:8000 https://json.myip.wtf
+```
+
+### Api for dynamic remote proxy chaining control
 
 ```sh
 # set
@@ -41,9 +63,3 @@ curl 127.0.0.1:6666/api/get-remote-proxy # {"data":"log:pass@127.0.0.1:1337"}
 curl -X POST 127.0.0.1:6666/api/set-remote-proxy -d '' # {"data":"OK"}
 ```
 
-### Usage
-
-Put your `API_HOST:API_PORT` as proxy param to request
-```sh
-curl -x http://127.0.0.1:8000 https://json.myip.wtf
-```
