@@ -1,3 +1,5 @@
 {
-  "ignore": ["ignore/**/*", "/**/*.ignore.*"]
+  "exec": "node -r dotenv/config ./src/forward/app.js",
+  "watch": ["src/"],
+  "ignore": ["ignore/**/*", "/**/*.ignore.*", "node_modules/"]
 }

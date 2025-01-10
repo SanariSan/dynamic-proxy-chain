@@ -1,7 +1,7 @@
 const http = require('http');
 const { setupHttp, setupHttps } = require('./proxy');
 
-function setupProxyServer({ host = '127.0.0.1', port = 3000, proxyHttpsOnly }) {
+function setupProxyServer({ proxyHost = '127.0.0.1', proxyPort = 3000, proxyHttpsOnly }) {
   const server = http.createServer();
 
   server.on('error', (e) => {
@@ -9,7 +9,7 @@ function setupProxyServer({ host = '127.0.0.1', port = 3000, proxyHttpsOnly }) {
       console.log('Address in use or not available, retrying...');
       setTimeout(() => {
         server.close();
-        server.listen(port, host);
+        server.listen(proxyPort, proxyHost);
       }, 5000);
     }
   });
@@ -17,8 +17,8 @@ function setupProxyServer({ host = '127.0.0.1', port = 3000, proxyHttpsOnly }) {
   setupHttp({ server, proxyHttpsOnly });
   setupHttps({ server });
 
-  server.listen(port, host, () => {
-    console.log(`Proxy Listening: ${host}:${port}`);
+  server.listen(proxyPort, proxyHost, () => {
+    console.log(`Proxy Listening: ${proxyHost}:${proxyPort}`);
   });
 }
 
